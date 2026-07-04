@@ -1,0 +1,23 @@
+{
+  "name": "campus-work-order-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "校园工单管理系统 - 丽水学院短学期实践项目",
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "dev:api": "pnpm --filter @campus-work-order/api dev",
+    "dev:web": "pnpm --filter @campus-work-order/web dev",
+    "build:api": "pnpm --filter @campus-work-order/api build",
+    "build:web": "pnpm --filter @campus-work-order/web build",
+    "build:shared": "pnpm --filter @campus-work-order/shared build",
+    "prisma:generate": "pnpm --filter @campus-work-order/api prisma:generate",
+    "prisma:push": "pnpm --filter @campus-work-order/api prisma:push",
+    "prisma:seed": "pnpm --filter @campus-work-order/api prisma:seed",
+    "prisma:studio": "pnpm --filter @campus-work-order/api prisma:studio"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      UserRole
+  phone     String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reportedWorkOrders WorkOrder[]     @relation("WorkOrderReporter")
+  assignedWorkOrders WorkOrder[]     @relation("WorkOrderWorker")
+  logs               WorkOrderLog[]
+  notifications      Notification[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  icon        String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workOrders WorkOrder[]
+
+  @@map("categories")
+}
+
+model WorkOrder {
+  id          Int              @id @default(autoincrement())
+  title       String
+  description String
+  location    String?
+  priority    Priority         @default(MEDIUM)
+  status      WorkOrderStatus  @default(PENDING)
+  resolution  String?
+  feedback    String?
+  acceptedAt  DateTime?
+  assignedAt  DateTime?
+  startedAt   DateTime?
+  resolvedAt  DateTime?
+  confirmedAt DateTime?
+  cancelledAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  categoryId Int      // 关联字段
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  reporterId Int
+  reporter   User     @relation("WorkOrderReporter", fields: [reporterId], references: [id])
+
+  workerId Int?
+  worker   User?     @relation("WorkOrderWorker", fields: [workerId], references: [id])
+
+  attachments  Attachment[]
+  logs         WorkOrderLog[]
+  notifications Notification[]
+
+  @@index([status])
+  @@index([reporterId])
+  @@index([workerId])
+  @@index([categoryId])
+  @@map("work_orders")
+}
+
+model Attachment {
+  id          Int            @id @default(autoincrement())
+  workOrderId Int
+  url         String
+  filename    String
+  mimeType    String
+  size        Int
+  type        AttachmentType
+  createdAt   DateTime       @default(now())
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  @@index([workOrderId])
+  @@map("attachments")
+}
+
+model WorkOrderLog {
+  id          Int              @id @default(autoincrement())
+  workOrderId Int
+  userId      Int
+  action      String
+  fromStatus  WorkOrderStatus?
+  toStatus    WorkOrderStatus?
+  detail      String?
+  createdAt   DateTime         @default(now())
+
+  workOrder WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([workOrderId])
+  @@map("logs")
+}
+
+model Notification {
+  id          Int              @id @default(autoincrement())
+  userId      Int
+  workOrderId Int?
+  title       String
+  content     String
+  type        NotificationType
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workOrder WorkOrder? @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+enum UserRole {
+  ADMIN
+  WORKER
+  STUDENT
+  TEACHER
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum WorkOrderStatus {
+  PENDING
+  ACCEPTED
+  ASSIGNED
+  PROCESSING
+  PENDING_CONFIRM
+  COMPLETED
+  UNRESOLVED
+  CANCELLED
+}
+
+enum AttachmentType {
+  BEFORE
+  AFTER
+}
+
+enum NotificationType {
+  WORK_ORDER_CREATED
+  WORK_ORDER_ACCEPTED
+  WORK_ORDER_ASSIGNED
+  WORK_ORDER_STARTED
+  WORK_ORDER_RESOLVED
+  WORK_ORDER_CONFIRMED
+  WORK_ORDER_UNRESOLVED
+  WORK_ORDER_CANCELLED
+}

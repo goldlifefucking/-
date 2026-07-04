@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Prisma
+prisma/migrations/
+
+# Uploads
+uploads/
+
+# Docker volumes
+postgres_data/
+
+# Coverage
+coverage/
+
+# Temp
+.cache/
+.temp/
+
+# WorkBuddy / CodeBuddy workspace
+.codebuddy/
+.workbuddy/
+
+# PPT source files
+*.pptx
