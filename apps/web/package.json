@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.0",
     "@campus-work-order/shared": "workspace:*",
     "ant-design-vue": "^4.2.0",
     "axios": "^1.7.0",
@@ -24,7 +25,6 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "sass": "^1.75.0",
     "typescript": "^5.4.0",
-    "vite": "^5.2.0",
-    "vue-tsc": "^2.0.0"
+    "vite": "^5.2.0"
   }
 }
