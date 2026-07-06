@@ -39,9 +39,13 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/packages/shared/node_modules ./packages/shared/node_modules
 
+# 复制启动脚本
+COPY apps/api/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # 创建上传目录
 RUN mkdir -p /app/uploads
 
 EXPOSE 3000
 
-CMD ["node", "apps/api/dist/main.js"]
+CMD ["/app/entrypoint.sh"]
