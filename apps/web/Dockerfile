@@ -9,6 +9,7 @@ WORKDIR /app
 COPY pnpm-workspace.yaml package.json ./
 COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
+COPY apps/web/nginx.conf ./nginx.conf
 
 # 安装依赖
 RUN pnpm install --frozen-lockfile 2>/dev/null || pnpm install
@@ -23,7 +24,7 @@ RUN pnpm --filter @campus-work-order/web build
 FROM nginx:alpine AS production
 
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
